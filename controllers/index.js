@@ -9,12 +9,12 @@ const { Devnote, User } = require('../models');
 //const withAuth = require('../helpers/utils');
 
 // home - with devnotes
-app.get('/', (req, res) => {
-    // Get all projects and JOIN with user data
-    const DevnoteData = await Devnote.findAll({
+app.get('/', async (req, res) => {
+    // Get all devnotes and JOIN with user data
+    const devnoteData = await Devnote.findAll({
       include: [
         {
-          model: Devnote,
+          model: User,
           attributes: ['name'],
         },
       ],
@@ -23,11 +23,10 @@ app.get('/', (req, res) => {
       const devnotes = devnoteData.map((devnote) => devnote.get({ plain: true }));
 
       // Pass serialized data and session flag into template
-      res.render('home', { 
+      res.render('devnotes', { 
         devnotes, 
         //logged_in: req.session.logged_in
       });
-  //readFromFile('./db/feedback.json').then((data) => res.json(JSON.parse(data)));
 });
 
 // dashboard - user admin
@@ -56,7 +55,7 @@ app.post('/', (req, res) => {
     // If all the required properties are present
     if (name && email && devnote_body && user_id) {
 
-      //ADDED
+      //sqlize DB create
       const newDevnote = Devnote.create({
         name,
         email,
