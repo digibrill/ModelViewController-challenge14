@@ -4,11 +4,29 @@ const app = express();
 const { readFromFile, readAndAppend } = require('../helpers/fsUtils');
 const uuid = require('../helpers/uuid');
 
+//ADDED
+const { Devnote, User } = require('../models');
+//const withAuth = require('../helpers/utils');
+
 // home - with devnotes
 app.get('/', (req, res) => {
-  console.info(`${req.method} request received for feedback`);
-  //handlebars call
-  res.render('home');
+    // Get all projects and JOIN with user data
+    const DevnoteData = await Devnote.findAll({
+      include: [
+        {
+          model: Devnote,
+          attributes: ['name'],
+        },
+      ],
+    });
+      // Serialize data so the template can read it
+      const devnotes = devnoteData.map((devnote) => devnote.get({ plain: true }));
+
+      // Pass serialized data and session flag into template
+      res.render('home', { 
+        devnotes, 
+        //logged_in: req.session.logged_in
+      });
   //readFromFile('./db/feedback.json').then((data) => res.json(JSON.parse(data)));
 });
 
@@ -28,35 +46,36 @@ app.get('/login', (req, res) => {
     //readFromFile('./db/feedback.json').then((data) => res.json(JSON.parse(data)));
   });
 
-// Post blog
-/*app.post('/', (req, res) => {
+// Post devnote
+app.post('/', (req, res) => {
     
     console.info(`${req.method} request received to submit feedback`);
   
-    const { email, feedbackType, feedback } = req.body;
+    const { name, email, devnote_body, user_id} = req.body;
   
     // If all the required properties are present
-    if (email && feedbackType && feedback) {
-      // Variable for the object we will save
-      const newFeedback = {
+    if (name && email && devnote_body && user_id) {
+
+      //ADDED
+      const newDevnote = Devnote.create({
+        name,
         email,
-        feedbackType,
-        feedback,
-        feedback_id: uuid(),
-      };
-  
-      readAndAppend(newFeedback, './db/feedback.json');
+        devnote_body,
+        user_id: req.user_id,
+        //user_id: req.session.user_id,
+      });
   
       const response = {
         status: 'success',
-        body: newFeedback,
+        body: newDevnote,
       };
   
       res.json(response);
+      console.log(response);
     } else {
       res.json('Error in posting feedback');
     }
-  });*/
+  });
 
 
 // POST Route for a new UX/UI tip
