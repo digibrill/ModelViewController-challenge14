@@ -1,0 +1,16 @@
+<!-- Loop over each object in the devnote array -->
+{{#each devnotes as |devnote| }}
+<div class="row mb-4 project">
+  <div class="col-md-5">
+    <h2>
+      <a href="/devnote/{{devnote.id}}">{{devnote.name}}</a>
+    </h2>
+    <p>Created by {{devnote.user.name}} on {{devnote.date_created}}</p>
+  </div>
+  <div class="col-md-7">
+    <p>
+      {{devnote.description}}
+    </p>
+  </div>
+</div>
+{{/each}}
