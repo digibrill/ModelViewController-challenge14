@@ -1,16 +1,16 @@
 <!-- Loop over each object in the devnote array -->
-{{#each devnotes as |devnote| }}
 <div class="row mb-4 project">
   <div class="col-md-5">
-    <h2>
-      <a href="/devnote/{{devnote.id}}">{{devnote.name}}</a>
-    </h2>
-    <p>Created by {{devnote.user.name}} on {{devnote.date_created}}</p>
+    <h5>
+      Welcome {{user.name}}
+    </h5>
+    <p>Email: {{user.email}}</p>
   </div>
   <div class="col-md-7">
     <p>
-      {{devnote.description}}
+      <a href="">Change {{user.password}}</a>
     </p>
   </div>
 </div>
-{{/each}}
+<button id="logout" class="btn btn-primary" type="submit">Logout</button>
+<script src="../logout.js"></script>

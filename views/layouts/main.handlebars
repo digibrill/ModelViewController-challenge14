@@ -14,18 +14,22 @@
   <div class="flex-column justify-space-around">
     <header class="display-flex justify-space-between align-center p-2">
       <nav>
+        {{#if logged_in}}
         <a href="/">Home</a> |
         <a href="/dashboard">Dashboard</a> |
+        {{/if}}
         {{#if logged_in}}
         <a href="/logout" id="logout">Logout</a>
         {{else}}
-        <a href="/login" id="login">Login</a>
+        <!--<a href="/login" id="login">Login</a>-->
         {{/if}}
       </nav>
+      {{#if logged_in}}
       <h1>
         <span role="img" aria-label="money">Developer's DevNotes</span>
       </h1>
         <a href="/">Blog your coding challenges and remembrances</a>
+      {{/if}}
     </header>
     <main class="container container-fluid mt-5">
       <!-- Render the sub layout -->

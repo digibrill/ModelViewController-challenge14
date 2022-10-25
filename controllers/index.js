@@ -1,3 +1,5 @@
+/* ROUTES */
+
 const express = require('express');
 const app = express();
 
@@ -9,7 +11,7 @@ const { Devnote, User } = require('../models');
 //const withAuth = require('../helpers/utils');
 
 // home - with devnotes
-app.get('/', async (req, res) => {
+app.get('/devnotes', async (req, res) => {
     // Get all devnotes and JOIN with user data
     const devnoteData = await Devnote.findAll({
       include: [
@@ -29,24 +31,8 @@ app.get('/', async (req, res) => {
       });
 });
 
-// dashboard - user admin
-app.get('/dashboard', (req, res) => {
-    console.info(`${req.method} request received for feedback`);
-    //handlebars call
-    res.render('dashboard');
-    //readFromFile('./db/feedback.json').then((data) => res.json(JSON.parse(data)));
-  });
-
-//Login
-app.get('/login', (req, res) => {
-    console.info(`${req.method} request received for feedback`);
-    //handlebars call
-    res.render('login');
-    //readFromFile('./db/feedback.json').then((data) => res.json(JSON.parse(data)));
-  });
-
 // Post devnote
-app.post('/', (req, res) => {
+app.post('/devnotes', (req, res) => {
     
     console.info(`${req.method} request received to submit feedback`);
   
@@ -76,27 +62,63 @@ app.post('/', (req, res) => {
     }
   });
 
+  // dashboard - user admin
+app.get('/dashboard', async (req, res) => {
+    const userData = await User.findOne({ where: { id: 1 } });
+    console.log(userData);
+    // Serialize data so the template can read it
+    //const user = await userData.map((user) => user.get({ plain: true }));
 
-// POST Route for a new UX/UI tip
-/*tips.post('/', (req, res) => {
-  console.info(`${req.method} request received to add a tip`);
-  console.log(req.body);
+    // Pass serialized data and session flag into template
+    res.render('dashboard', { 
+      dashboard, 
+      //logged_in: req.session.logged_in
+    });
+});
 
-  const { username, topic, tip } = req.body;
+// POST Route for new user
+app.post('/dashboard', (req, res) => {
 
-  if (req.body) {
-    const newTip = {
-      username,
-      tip,
-      topic,
-      tip_id: uuid(),
-    };
+  const { name, email, password } = req.body;
+  
+    // If all the required properties are present
+  if (name && email && password) {
 
-    readAndAppend(newTip, './db/tips.json');
-    res.json(`Tip added successfully 🚀`);
+      //sqlize DB create
+      const newUser = User.create({
+        name,
+        email,
+        password
+      });
+  
+      const response = {
+        status: 'success',
+        body: newUser,
+      };
+
+    res.json(`User added successfully`);
   } else {
-    res.error('Error in adding tip');
+    res.error('Error in adding user');
   }
-});*/
+});
+
+//Login and Logout
+app.get('/login', (req, res) => {
+  console.info(`${req.method} request received for feedback`);
+  //handlebars call
+  res.render('login');
+  //readFromFile('./db/feedback.json').then((data) => res.json(JSON.parse(data)));
+});
+
+app.post('/logout', (req, res) => {
+  if (req.session.logged_in) {
+    req.session.destroy(() => {
+      res.status(204).end();
+    });
+  } else {
+    res.status(404).end();
+  }
+});
+
 
 module.exports = app;
