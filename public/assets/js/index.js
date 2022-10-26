@@ -175,7 +175,7 @@ const renderDevnoteList = async (devnotes) => {
 // Gets devnotes from the db and renders them to the sidebar
 const getAndRenderDevnotes = () => getDevnotes().then(renderDevnoteList);
 
-if (window.location.pathname === '/notes') {
+if (window.location.pathname === '/devnotes') {
   saveDevnoteBtn.addEventListener('click', handleDevnoteSave);
   newDevnoteBtn.addEventListener('click', handleNewDevnoteView);
   devnoteTitle.addEventListener('keyup', handleDevnoteRenderSaveBtn);
