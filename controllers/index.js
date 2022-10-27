@@ -2,49 +2,46 @@
 
 const express = require('express');
 const app = express();
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const { readFromFile, readAndAppend } = require('../helpers/fsUtils');
 const uuid = require('../helpers/uuid');
-
 const withAuth = require('../helpers/auth');
+//const sequelize = require('../config/connection');
+//const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const { Devnote, User } = require('../models');
 
-const {
-  NODE_ENV = 'development',
-  SESS_NAME = 'sid',
-  SESS_SECRET = 'Secret secret secrettttt',
-  SESS_LIFETIME = TWO_HOURS
-} = process.env;
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
-const IN_PROD = NODE_ENV === 'production';
+/*const sess = {
+  secret: 'Super secret secret',
+  cookie: {
+    maxAge: 300000,
+    httpOnly: true,
+    secure: false,
+    sameSite: 'strict',
+  },
+  resave: false,
+  saveUninitialized: true,
+  store: new SequelizeStore({
+    db: sequelize
+  })
+};
+app.use(session(sess));*/
+
 const users =[
   {id:1, name:'J.C.', email: 'jchalresberry@gmail.com', password: 'secret'},
   {id:2, name:'jen', email: 'jenberry@mac.com', password: 'secret'},
   {id:3, name:'jussara', email: 'jusberry1@gmail.com', password: 'secret'}
 ];
 
-const { Devnote, User } = require('../models');
-//const withAuth = require('../helpers/utils');
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-
-app.use(session({
-  name: SESS_NAME,
-  resave: false,
-  saveUnitialized: false,
-  secret: SESS_SECRET,
-  cookie: {
-    maxAge: SESS_LIFETIME,
-    sameSite: true,
-    secure: IN_PROD
-  }
-})
-
-const redirectLogin = (req, res, next) => {
+/*const redirectLogin = (req, res, next) => {
   if(!req.session.userId){
     res.redirect('/login')
   } else{
-    next()
+    next();
   }
 }
 const redirectHome = (req, res, next) => {
@@ -63,11 +60,11 @@ app.use((req, res, next) => {
     )
   }
   next();
-})
+})*/
 
 // home - with devnotes
 
-app.get('/devnotes', async (req, res) => {
+app.get('/devnotes', withAuth, async (req, res) => {
     // Get all devnotes and JOIN with user data
     const devnoteData = await Devnote.findAll({
       include: [
@@ -88,7 +85,7 @@ app.get('/devnotes', async (req, res) => {
 });
 
 // Post devnote
-app.post('/devnotes', (req, res) => {
+app.post('/devnotes', withAuth, (req, res) => {
     
     console.info(`${req.method} request received to submit feedback`);
   
@@ -168,20 +165,6 @@ app.post('/dashboard', withAuth, (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //LANDING PAGE
 app.get('/', withAuth, (req, res) => {
   //const { userId } = req.session;
@@ -199,7 +182,7 @@ app.get('/', withAuth, (req, res) => {
 
 });
 //HOME
-app.get('/home' withAuth, redirectLogin, (req, res) => {
+/*app.get('/home', withAuth, (req, res) => {
   const { user } = res.locals;
   res.send(`
   <h1>Home</h1>
@@ -208,7 +191,7 @@ app.get('/home' withAuth, redirectLogin, (req, res) => {
   <li>Name: ${user.name}</li>
   <li>Email: ${user.email}</li>
   </ul>`);
-});
+});*/
 
 /*app.get('/profile', redirectLogin, (req.res) => {
   const { user } = res.locals;
@@ -223,19 +206,15 @@ app.get('/home' withAuth, redirectLogin, (req, res) => {
 
 //Login and register GET
 //USER CAN LOG IN HERE -FORM AND INPUTS
-app.get('/login', redirectHome, (req, res) => {
-  res.send(`
-  <h1>Login</h1>
-  <form method='post' action='/login'>
-    <input type='email' name='email' placeholder='Email' required />
-    <input type='password' name='password' placeholder='Password' required />
-    <input type='submit' />
-  </form>
-  <a href='/register'>Register</a>
-  `);
+app.get('/login', (req, res) => {
+  if(req.session.logged_in){
+    res.redirect('/');
+    return;
+  }
+  res.render(`login`);
 });
-//USE CAN REGISTER HERE
-app.get('/register', withAuth, redirectHome, (req, res) => {
+//USER CAN REGISTER HERE
+app.get('/register', (req, res) => {
   res.send(`
   <h1>Register</h1>
   <form method='post' action='/register'>
@@ -250,46 +229,51 @@ app.get('/register', withAuth, redirectHome, (req, res) => {
 
 //Login and register POST
 //POST EMAIL AND PW
-app.post('/login', redirectHome, (req, res) => {
-  const { email, password } = req.body;
-  if(email && password){//VALIDATE
-    const user = users.find(
-      user => user.email === email && user.password
-    )
-    if(user){
-      req.session.userId = user.id
-      return res.redirect('/home')
+app.post('/login', async (req, res) => {
+  try {
+    const dbUserData = await User.findOne({//VALIDATE
+      where: {
+        email: req.body.email,
+      },
+    });
+
+    if(!dbUserData){
+      res.status(400).json({message: 'Incorrect email or password. Please try again.'});
+      return;
+    };
+    const validPassword = await dbUserData.checkPassword(req.body.password);
+    if(!validPassword){
+      res.status(400).json({message: 'Incorrect email or password. Please try again.'})
+      return;
     }
+  } catch(err) {
+    console.log(err);
+    res.status(500).json(err);
   }
-  res.redirect('/login');
+  res.redirect('/devnotes');
 });
 
 //POST NEW USER
-app.post('/register', redirectHome, (req, res) => {
-  const { name, email, password } = req.body;
-  if(name && email && password){//VALIDATE
-    const exists = users.some(
-      user => user.email === email
-    )
-    if(!exists){
-      const user = {
-        id: users.length + 1,
-        name,
-        email,
-        password
-      }
-      users.push(user)
-
-      req.session.userId = user.id;
-
-      return res.redirect('/home')
-    }
+app.post('/register', async (req, res) => {
+  try {
+    const { srcusername, srcemail, srcpassword } = req.body;
+    const dbUserData = await User.create({//VALIDATE
+      username: srcusername,
+      email: srcemail,
+      password: srcpassword
+    });
+    req.session.save(() => {
+      req.session.loggedIn = true;
+      res.status(200).json(dbUserData);
+    });
+  } catch(err) {
+    console.log(err);
+    res.status(500).json(err);
   }
-  res.redirect('/register') //Todo qs for errors
 });
 
 //Login and Logout
-app.post('/user', redirectLogin, (req, res) => {
+app.post('/user', (req, res) => {
   console.log(req.session);
   res.send('test');
   /*const userData = await User.findOne({
@@ -313,12 +297,13 @@ app.post('/user', redirectLogin, (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-    req.session.destroy(err => {
-      if(err){
-        return res.redirect('/home')
-      }
-      res.clearCookie(SESS_NAME);
-      res.redirect('/login');
+  if(req.session.loggedIn){
+    req.session.destroy(() => {
+      return res.status(204).end();
+    });
+  } else {
+    res.status(404).end();
+  }
 });
 
 module.exports = app;
