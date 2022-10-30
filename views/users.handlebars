@@ -9,18 +9,18 @@
         <i class="fas fa-plus text-light new-note"></i>
       </div>
     </nav>
-  {{#if devnote.length}}
+  {{#if users.length}}
 
   <div class="col-md-6 post-list">
     <h3>Current Users:</h3>
 
-    {{#each devnotes as |devnote|}}
+    {{#each users as |user|}}
     <div class="row mb-2">
       <div class="col-md-8">
-        <h4><a href="/devnote/{{devnote.id}}">{{devnote.name}}</a></h4>
+        <h4><a href="/devnote/{{devnote.id}}">{{user.name}}</a></h4>
       </div>
       <div class="col-md-4">
-        <button class="btn btn-sm btn-danger" data-id="{{devnote.id}}">DELETE</button>
+        <button class="btn btn-sm btn-danger" data-id="{{user.id}}">DELETE</button>
         <textarea class="note-textarea" placeholder="Note Text"></textarea>
       </div>
     </div>

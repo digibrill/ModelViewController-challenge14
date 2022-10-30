@@ -26,6 +26,14 @@ const hide = (elem) => {
 // activeNote is used to keep track of the note in the textarea
 let activeDevnote = {};
 
+const userLogin = () =>
+  fetch('/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
 const getDevnotes = () =>
   fetch('/devnotes', {
     method: 'GET',
@@ -35,12 +43,21 @@ const getDevnotes = () =>
   });
 
 const saveDevnote = (devnote) =>
-  fetch('/', {
+  fetch('/devnotes', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(devnote),
+  });
+
+const saveUser = (user) =>
+  fetch('/api/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(user),
   });
 
 const deleteDevnote = (id) =>
@@ -50,6 +67,8 @@ const deleteDevnote = (id) =>
       'Content-Type': 'application/json',
     },
   });
+
+
 
 const renderActiveDevnote = () => {
   hide(saveDevnoteBtn);
