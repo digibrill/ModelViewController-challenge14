@@ -37,6 +37,21 @@ const delButtonHandler = async (event) => {
   }
 };
 
+const logout = async () => {
+  console.log('logged out profile.js!')
+  const response = await fetch('/api/users/logout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (response.ok) {
+    document.location.replace('/');
+  } else {
+    alert(response.statusText);
+  }
+};
+
+document.querySelector('#logout_btn').addEventListener('click', logout);
+
 document
   .querySelector('.new-project-form')
   .addEventListener('submit', newFormHandler);

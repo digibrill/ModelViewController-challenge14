@@ -4,7 +4,7 @@ let saveDevnoteBtn;
 let newDevnoteBtn;
 let devnoteList;
 
-if (window.location.pathname === '/devnotes') {
+if (window.location.pathname === '/') {
   devnoteTitle = document.querySelector('.note-title');
   devnoteText = document.querySelector('.note-textarea');
   saveDevnoteBtn = document.querySelector('.save-note');

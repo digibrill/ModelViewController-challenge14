@@ -1,32 +1,36 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User, Devnote } = require('../../models');
 //const bodyParser = require('body-parser');
+const { readFromFile, readAndAppend } = require('../../utils/fsUtils');
+const uuid = require('../../utils/uuid');
+const withAuth = require('../../utils/auth');
 
-router.get('/users',  (req, res) => {
-  console.log('runs!');
-  const userData = User.findAll({
-    /*include: [
+//USER HOME
+router.get('/', withAuth, async (req, res) => {
+  //console.log('test');
+  const userData = await User.findOne({
+    where: [
       {
-        model: Devnote,
-        attributes: ['devnote_body'],
+        user_id: req.session.user_id,
       },
-    ],*/
+    ],
   });
+  //console.log(userData);
   // Serialize data so the template can read it
   const users = userData.map((user) => user.get({ plain: true }));
-  console.log(users);
+  //console.log(users);
   // Pass serialized data and session flag into template
   res.render('users', { 
     users, 
-    //logged_in: req.session.logged_in
+    logged_in: req.session.logged_in
   });
 });
 
 // CREATE new user
-router.post('/users', (req, res) => {
+router.post('/', withAuth, async (req, res) => {
   const { name, email, password } = req.body;
   try {
-    const newUser = User.create({
+    const newUser = await User.create({
       name,
       email,
       password,
@@ -37,11 +41,6 @@ router.post('/users', (req, res) => {
       body: newUser,
     };
     // Set up sessions with a 'loggedIn' variable set to `true`
-    /*req.session.save(() => {
-      req.session.loggedIn = true;
-
-      res.status(200).json(dbUserData);
-    });*/
     res.json(response);
   } catch (err) {
     console.log(err);

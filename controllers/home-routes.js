@@ -1,13 +1,18 @@
 const router = require('express').Router();
 const { Devnote, User } = require('../models');
 const bodyParser = require('body-parser');
-//const { readFromFile, readAndAppend } = require('../helpers/fsUtils');
-//const uuid = require('../helpers/uuid');
-//const withAuth = require('../helpers/auth');
+const { readFromFile, readAndAppend } = require('../utils/fsUtils');
+const uuid = require('../utils/uuid');
+const withAuth = require('../utils/auth');
 
-router.get('/', async (req, res) => {
+//HOME PAGE
+router.get('/devnotes', withAuth, async (req, res) => {
   // Get all devnotes and JOIN with user data
+  //console.log(req.session.user_id);
   const devnoteData = await Devnote.findAll({
+    /*where: {
+      user_id: req.session.user_id,
+    },*/
     include: [
       {
         model: User,
@@ -17,31 +22,29 @@ router.get('/', async (req, res) => {
   });
   // Serialize data so the template can read it
   const devnotes = devnoteData.map((devnote) => devnote.get({ plain: true }));
-  console.log(devnotes);
+  // console.log(req.session.user_id);
   // Pass serialized data and session flag into template
-  res.render('devnotes', { 
-    devnotes, 
-    //logged_in: req.session.logged_in
+  res.render('devnotes', {
+    devnotes,
+    logged_in: req.session.logged_in
   });
 });
 
 // POST one devnote
-router.post('/devnotes', (req, res) => {
+router.post('/devnotes', withAuth, (req, res) => {
     
   console.info(`${req.method} request received to submit feedback`);
 
-  const { name, email, devnote_body, user_id} = req.body;
+  const { name, devnote_body} = req.body;
 
   // If all the required properties are present
-  if (name && email && devnote_body && user_id) {
+  if (name && devnote_body) {
 
     //sqlize DB create
     const newDevnote = Devnote.create({
       name,
-      email,
       devnote_body,
-      user_id: req.user_id,
-      //user_id: req.session.user_id,
+      user_id: req.session.user_id,
     });
 
     const response = {
@@ -57,36 +60,13 @@ router.post('/devnotes', (req, res) => {
 });
 
 // Login route
-router.get('/login', (req, res) => {
-  console.log('ran');
+router.get('/', (req, res) => {
   if (req.session.loggedIn) {
-    res.redirect('/');
+    res.redirect('/devnotes');
     return;
   }
-  // Otherwise, render the 'login' template
-  res.render('login');//loggedIn: req.session.loggedIn,
+  res.render('login');
+  //loggedIn: req.session.loggedIn;
 });
-
-/* TESTED THIS OUT BECAUSE API FOLDER NOT WORKING!
-router.get('/users',  (req, res) => {
-  console.log('runs!');
-  const userData = User.findAll({
-    /*include: [
-      {
-        model: Devnote,
-        attributes: ['devnote_body'],
-      },
-    ],
-  });
-  // Serialize data so the template can read it
-  const users = userData.map((user) => user.get({ plain: true }));
-  console.log(users);
-  // Pass serialized data and session flag into template
-  res.render('users', { 
-    users, 
-    //logged_in: req.session.logged_in
-  });
-});
-*/
 
 module.exports = router;
