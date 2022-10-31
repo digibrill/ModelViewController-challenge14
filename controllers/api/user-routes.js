@@ -5,6 +5,35 @@ const { readFromFile, readAndAppend } = require('../../utils/fsUtils');
 const uuid = require('../../utils/uuid');
 const withAuth = require('../../utils/auth');
 
+// POST one devnote
+router.post('/devnotes', withAuth, (req, res) => {
+    
+  console.info(`${req.method} request received to submit feedback`);
+
+  const { name, devnote_body} = req.body;
+
+  // If all the required properties are present
+  if (name && devnote_body) {
+
+    //sqlize DB create
+    const newDevnote = Devnote.create({
+      name,
+      devnote_body,
+      user_id: req.session.user_id,
+    });
+
+    const response = {
+      status: 'success',
+      body: newDevnote,
+    };
+
+    res.json(response);
+    console.log(response);
+  } else {
+    res.json('Error in posting feedback');
+  }
+});
+
 //USER HOME
 router.get('/', withAuth, async (req, res) => {
   //console.log('test');
@@ -79,7 +108,7 @@ router.post('/login', async (req, res) => {
 
       res
         .status(200)
-        .json({ user: dbUserData, message: 'You are now logged in!' });
+        .json({ dbUserData, message: 'You are now logged in!' });
     });
   } catch (err) {
     console.log(err);

@@ -4,7 +4,7 @@ let saveDevnoteBtn;
 let newDevnoteBtn;
 let devnoteList;
 
-if (window.location.pathname === '/') {
+if (window.location.pathname === '/dashboard') {
   devnoteTitle = document.querySelector('.note-title');
   devnoteText = document.querySelector('.note-textarea');
   saveDevnoteBtn = document.querySelector('.save-note');
@@ -194,7 +194,7 @@ const renderDevnoteList = async (devnotes) => {
 // Gets devnotes from the db and renders them to the sidebar
 const getAndRenderDevnotes = () => getDevnotes().then(renderDevnoteList);
 
-if (window.location.pathname === '/devnotes') {
+if (window.location.pathname === '/dashboard') {
   saveDevnoteBtn.addEventListener('click', handleDevnoteSave);
   newDevnoteBtn.addEventListener('click', handleNewDevnoteView);
   devnoteTitle.addEventListener('keyup', handleDevnoteRenderSaveBtn);
