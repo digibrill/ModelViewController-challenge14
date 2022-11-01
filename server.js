@@ -16,8 +16,9 @@ const sess = {
   secret: 'Super secret secret',
   resave: false,
   saveUninitialized: true,
+  
 };
-
+//const session = require('express-session')
 app.use(session(sess));
 
 const hbs = exphbs.create({ helpers });

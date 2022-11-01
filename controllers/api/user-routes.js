@@ -6,7 +6,7 @@ const uuid = require('../../utils/uuid');
 const withAuth = require('../../utils/auth');
 
 // POST one devnote
-router.post('/devnotes', withAuth, (req, res) => {
+router.post('/devnotes', (req, res) => {
     
   console.info(`${req.method} request received to submit feedback`);
 
@@ -19,7 +19,8 @@ router.post('/devnotes', withAuth, (req, res) => {
     const newDevnote = Devnote.create({
       name,
       devnote_body,
-      user_id: req.session.user_id,
+      user_id: req.session.uid,
+      //user_id: req.body.user_id
     });
 
     const response = {
@@ -58,6 +59,7 @@ router.get('/', withAuth, async (req, res) => {
 // CREATE new user
 router.post('/', withAuth, async (req, res) => {
   const { name, email, password } = req.body;
+  
   try {
     const newUser = await User.create({
       name,
@@ -69,11 +71,27 @@ router.post('/', withAuth, async (req, res) => {
       status: 'success',
       body: newUser,
     };
-    // Set up sessions with a 'loggedIn' variable set to `true`
+    // Set up sessions with a 'logged_in' variable set to `true`
     res.json(response);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
+  }
+});
+
+
+// Login
+router.post('/changePassword', async (req, res) => {
+  try {
+    const dbUserUpdate = await User.update({
+      password: req.body.password
+    },{
+      where: {
+        id: req.body.user_id//req.session.uid,
+      },
+    });
+  }catch(err){
+    console.log('ERROR: ', err);
   }
 });
 
@@ -85,7 +103,7 @@ router.post('/login', async (req, res) => {
         email: req.body.email,
       },
     });
-
+    req.session.uid = dbUserData.id;
     if (!dbUserData) {
       res
         .status(400)
@@ -102,10 +120,10 @@ router.post('/login', async (req, res) => {
       return;
     }
 
-    // Once the user successfully logs in, set up the sessions variable 'loggedIn'
+    // Once the user successfully logs in, set up the sessions variable 'logged_in'
     req.session.save(() => {
-      req.session.loggedIn = true;
-
+      req.session.logged_in = true;
+      //req.session.uid = 
       res
         .status(200)
         .json({ dbUserData, message: 'You are now logged in!' });
@@ -119,7 +137,7 @@ router.post('/login', async (req, res) => {
 // Logout
 router.post('/logout', (req, res) => {
   // When the user logs out, destroy the session
-  if (req.session.loggedIn) {
+  if (req.session.logged_in) {
     req.session.destroy(() => {
       res.status(204).end();
     });
