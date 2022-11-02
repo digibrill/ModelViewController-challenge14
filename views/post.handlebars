@@ -1,0 +1,24 @@
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="icons">
+        <i class="fas fa-save text-light save-note"></i>
+        <i class="fas fa-plus text-light new-note"></i>
+      </div>
+    </nav>
+      <nav>
+        <a href="/homepage">Home</a> {{#if logged_in}}|
+        <a href="/dashboard">Dashboard</a> |
+        <button type="submit" id="logout" class="btn">Log out</button>
+        {{/if}}
+      </nav><br>
+  <div class="row mb-4 project">
+    <div class="col-md-5">
+
+    </div>
+  </div>
+<h5>Edit Dev Note</h5>
+<form>
+  <input type="text" value="{{name}}" class="form-control"/><br>
+  <textarea id="post_body" placeholder="Enter note body" class="form-control">{{devnote_body}}</textarea><br>
+  <button type="submit" class="btn" id="post_note">Post Dev Note</button>
+</form>
+<script src="./assets/js/logout.js"></script>

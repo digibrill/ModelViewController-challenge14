@@ -1,4 +1,11 @@
-<!-- Loop over each object in the projects array -->
+      <nav>
+        
+        <a href="/homepage">Home</a> {{#if logged_in}}|
+        <a href="/dashboard">Dashboard</a> |
+        <button type="submit" id="logout" class="btn">Log out</button>
+        {{/if}}
+      </nav><br>
+
 {{#each devnotes as |devnote| }}
 <div class="row mb-4 project">
   <div class="col-md-5">
@@ -14,3 +21,4 @@
   </div>
 </div>
 {{/each}}
+<script src="./assets/js/logout.js"></script>

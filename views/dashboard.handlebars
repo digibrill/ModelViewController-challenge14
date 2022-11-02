@@ -1,10 +1,15 @@
-<!-- Loop over each object in the devnotes array -->
-<h1>Your Developer Notes</h1>
+      <nav>
+        <a href="/homepage">Home</a> {{#if logged_in}}|
+        <a href="/dashboard">Dashboard</a> |
+        <button type="submit" id="logout" class="btn">Log out</button>
+        {{/if}}
+      </nav><br>
 {{#each devnotes as |devnote| }}  
   {{#if @first}}
-    <h5>Welcome {{devnote.user.name}} <a href="/changePassword">Change Password</a></h5>
-  {{/if}}
+    <h5>Welcome {{devnote.user.name}} (<a href="/changePassword">Change Password</a>)</h5>
+  {{/if}}<br><br>
   <div class="row mb-4 project">
+    <h6><strong>Your Dev Notes</strong></h6><br><br>
     <div class="col-md-5">
       <h6>
         {{devnote.name}}
@@ -13,9 +18,21 @@
         {{devnote.devnote_body}}
       </p>
       <p>User: {{devnote.user.email}}</p>
+      <p><a href="/devnotes/{{devnote.id}}">EDIT NOTE</a></p>
     </div>
 
   </div>
 {{/each}}
-<button id="logout" class="btn btn-primary" type="submit">Logout</button>
+<h5>Create a new Dev Note</h5>
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="icons">
+        <i class="fas fa-save text-light save-note"></i>
+        <i class="fas fa-plus text-light new-note"></i>
+      </div>
+    </nav>
+<form>
+  <input type="text" id="post_title" placeholder="Enter post title" class="form-control"/><br>
+  <textarea id="post_body" placeholder="Enter note body" class="form-control"></textarea><br>
+  <button type="submit" class="btn" id="post_note">Post Dev Note</button>
+</form>
 <script src="./assets/js/logout.js"></script>
