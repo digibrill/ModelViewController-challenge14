@@ -1,9 +1,8 @@
       <nav>
         
-        <a href="/homepage">Home</a> {{#if logged_in}}|
-        <a href="/dashboard">Dashboard</a> |
-        <button type="submit" id="logout" class="btn">Log out</button>
-        {{/if}}
+        <button type="submit" id="home" class="btn btn-success">Home</button> |
+        <button type="submit" id="dashboard" class="btn btn-secondary">Dashboard</button> {{#if logged_in}}|
+        <button type="submit" id="logout" class="btn btn-warning">Log out</button>{{else}}<button type="submit" id="login" class="btn btn-warning">Log in</button>{{/if}}
       </nav><br>
 
 {{#each devnotes as |devnote| }}
@@ -12,7 +11,7 @@
     <h5>
       <a href="/devnotes/{{devnote.id}}">{{devnote.name}}</a> {{sess_id}}
     </h5>
-    <p>Created by {{devnote.name}} on {{devnote.date_created}}</p>
+    <p>Created by {{devnote.user.name}} on {{devnote.date_created}}</p>
   </div>
   <div class="col-md-7">
     <p>
@@ -21,4 +20,5 @@
   </div>
 </div>
 {{/each}}
+{{#if logged_in}}<p><a href="/devnotes/{{devnote.id}}">EDIT NOTE</a></p>{{/if}}
 <script src="./assets/js/logout.js"></script>

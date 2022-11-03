@@ -62,7 +62,7 @@ router.get('/login', (req, res) => {
     return;
   }
   res.render('login');
-  //logged_in: req.session.logged_in;
+  logged_in: req.session.logged_in;
 });
 
 // Login
@@ -94,8 +94,7 @@ router.post('/login', async (req, res) => {
     req.session.save(() => {
       req.session.logged_in = true;
       //req.session.uid = 
-      res
-        .status(200)
+      res.status(200)
         .json({ dbUserData, message: 'You are now logged in!' });
       //res.redirect('/dashboard');
     });
@@ -107,7 +106,7 @@ router.post('/login', async (req, res) => {
 
 
 //Devnote post page
-router.get('/devnotes/:id', withAuth, async (req, res) => {
+router.get('/devnotes/:id', async (req, res) => {
   //console.log('test');
   const devnote = await Devnote.findOne({
     where: {
@@ -117,11 +116,11 @@ router.get('/devnotes/:id', withAuth, async (req, res) => {
   // Serialize data so the template can read it
   //devnote = devnoteArr[0].map((devnote) => devnote.get({ plain: true }));
   
-  //console.log(devnoteArr[0]);
+  const devnote_plain = devnote.get({plain:true});
   // Pass serialized data and session flag into template
   res.render('post', { 
-    devnote, 
-    //logged_in: req.session.logged_in
+    devnote_plain, 
+    logged_in: req.session.logged_in
   });
 });
 

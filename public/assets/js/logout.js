@@ -10,5 +10,13 @@ const logout = async () => {
     alert(response.statusText);
   }
 };
+const home = () => document.location.replace('/homepage');
 
+const dashboard = () => document.location.replace('/dashboard');
+
+const login = () => document.location.replace('/login');
+
+document.querySelector('#home').addEventListener('click', home);
+document.querySelector('#dashboard').addEventListener('click', dashboard);
+document.querySelector('#login').addEventListener('click', login);
 document.querySelector('#logout').addEventListener('click', logout);

@@ -1,8 +1,7 @@
       <nav>
-        <a href="/homepage">Home</a> {{#if logged_in}}|
-        <a href="/dashboard">Dashboard</a> |
-        <button type="submit" id="logout" class="btn">Log out</button>
-        {{/if}}
+        <button type="submit" id="home" class="btn btn-secondary">Home</button> |
+        <button type="submit" id="dashboard" class="btn btn-success">Dashboard</button> {{#if logged_in}}|
+        <button type="submit" id="logout" class="btn btn-warning">Log out</button>{{else}}<button type="submit" id="login" class="btn btn-warning">Log in</button>{{/if}}
       </nav><br>
 {{#each devnotes as |devnote| }}  
   {{#if @first}}
