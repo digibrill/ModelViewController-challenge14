@@ -22,4 +22,4 @@
 </div>
 {{/each}}
 {{#if logged_in}}<p><a href="/devnotes/{{devnote.id}}">EDIT NOTE</a></p>{{/if}}
-<script src="./assets/js/logout.js"></script>
+{{#if logged_in}}<script src="./assets/js/logout.js"></script>{{else}}<script src="./assets/js/login.js"></script>{{/if}}
