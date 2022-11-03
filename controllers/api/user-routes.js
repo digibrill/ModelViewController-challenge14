@@ -37,19 +37,13 @@ router.post('/devnotes', (req, res) => {
 
 //UPDATE NOTE
 router.put('/devnotes/:id', async (req, res) => {
-  try {
-    const { post_id } = req.params;
-    const [updated] = await Devnote.update(req.body, {
-      where: { id: post_id }
-    });
-    if (updated) {
-      const updatedNote = await Devnote.findOne({ where: { id: post_id } });
-      return res.status(200).json({ devnote: updatedNote });
-    }
-    throw new Error("Your note was not found!");
-  } catch (error) {
-    return res.status(500).send(error.message);
-  }
+    const { post_id } = req.params.id;
+    const [updated] = await Devnote.update({
+      name: req.body.devnotetitle,
+      devnote_body: req.body.devnotebody},
+      { where: { id: post_id }},
+    );
+    return res.status(200).json({});
 });
 
 //DELETE NOTE

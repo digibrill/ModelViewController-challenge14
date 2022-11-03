@@ -31,7 +31,7 @@ router.get('/homepage', withAuth, async (req, res) => {
 //DASHBOARD PAGE
 router.get('/dashboard', withAuth, async (req, res) => {
   // Get all devnotes and JOIN with user data
-  console.log(req.session.uid);
+  //console.log(req.session.uid);
   const devnoteData = await Devnote.findAll({
     where: {
       user_id: req.session.uid,

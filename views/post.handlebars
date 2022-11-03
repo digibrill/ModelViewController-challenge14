@@ -1,13 +1,8 @@
-    <nav class="navbar navbar-dark bg-dark">
-      <div class="icons">
-        <i class="fas fa-save text-light save-note"></i>
-        <i class="fas fa-plus text-light new-note"></i>
-      </div>
-    </nav>
-    <nav>
+    <nav>{{#if logged_in}}
       <button type="submit" id="home" class="btn btn-secondary">Home</button> |
-      <button type="submit" id="dashboard" class="btn btn-secondary">Dashboard</button> {{#if logged_in}}|
-      <button type="submit" id="logout" class="btn btn-warning">Log out</button>{{else}}<button type="submit" id="login" class="btn btn-warning">Log in</button>{{/if}}
+      <button type="submit" id="dashboard" class="btn btn-secondary">Dashboard</button> |
+      <button type="submit" id="logout" class="btn btn-warning">Log out</button>
+      {{else}}<button type="submit" id="login" class="btn btn-warning">Log in</button>{{/if}}
     </nav><br>
   <div class="row mb-4 project">
     <div class="col-md-5">
@@ -18,14 +13,15 @@
 {{#if logged_in}}
 <form>
   <input type="text" id="name" value="{{devnote_plain.name}}" class="form-control"/><br>
-  <textarea id="devnote_body" placeholder="Enter note body" class="form-control">{{devnote_plain.devnote_body}}</textarea><br>
-  <button type="submit" class="fas fa-save btn btn-success updateBtn"> Resave Dev Note</button>
+  <textarea id="devnote_body" placeholder="Enter note body" class="form-control">
+    {{devnote_plain.devnote_body}}</textarea><br>
+  <button type="submit" class="fas fa-save btn btn-success updateBtn"> Update Dev Note</button>
   <button type="submit" class="fas fa-save btn btn-success deleteBtn"> DELETE DEV NOTE</button>
 </form>
 <script src="../assets/js/logout.js"></script>
+<script src="../assets/js/update.js"></script>
 {{else}}
 <h4>{{devnote_plain.name}}</h4><br>
 {{devnote_plain.devnote_body}}
-<script src="../assets/js/login.js"></script>
+<script src="../assets/js/login_btn.js"></script>
 {{/if}}
-<script src="../assets/js/update.js"></script>

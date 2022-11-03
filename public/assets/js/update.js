@@ -1,7 +1,10 @@
 const updateNote = async () => {
-  const response = await fetch('/api/users/devnotes/', {
+  const id = location.href.substring(31);
+  const devnotetitle = document.getElementById('name').value.trim()
+  const devnotebody = document.getElementById('devnote_body').value.trim()
+  const response = await fetch('/api/users/devnotes/' + id, {
     method: 'PUT',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ devnotetitle, devnotebody }),
     headers: { 'Content-Type': 'application/json' },
   });
   if (response.ok) {
