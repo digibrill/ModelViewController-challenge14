@@ -5,11 +5,11 @@ let newDevnoteBtn;
 let devnoteList;
 
 if (window.location.pathname === '/dashboard') {
-  devnoteTitle = document.querySelector('.note-title');
-  devnoteText = document.querySelector('.note-textarea');
+  devnoteTitle = document.querySelector('#name');
+  devnoteText = document.querySelector('#devnote_body');
   saveDevnoteBtn = document.querySelector('.save-note');
-  newDevnoteBtn = document.querySelector('.new-note');
-  devnoteList = document.querySelectorAll('.list-group');
+  //newDevnoteBtn = document.querySelector('.new-note');
+  //devnoteList = document.querySelectorAll('.list-group');
   //devnoteList = document.querySelectorAll('.list-container .list-group');
 }
 
@@ -34,22 +34,23 @@ const userLogin = () =>
     },
   });
 
-const getDevnotes = () =>
+/*const getDevnotes = () =>
   fetch('/devnotes', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-  });
-
-const saveDevnote = (devnote) =>
-  fetch('/devnotes', {
+  });*/
+  
+const saveDevnote = (devnote) => {
+  const name = devnoteTitle.value;
+  const devnote_body = devnoteText.value;
+  fetch('/api/users/devnotes', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(devnote),
+    body: JSON.stringify({name, devnote_body}),
+    headers: { 'Content-Type': 'application/json' },
   });
+}
 
 const saveUser = (user) =>
   fetch('/api/users', {
@@ -87,16 +88,17 @@ const renderActiveDevnote = () => {
   }
 };
 
-const handleDevnoteSave = () => {
+/*const handleDevnoteSave = () => {
   const newDevnote = {
-    title: devnoteTitle.value,
-    text: devnoteText.value,
+    name: devnoteTitle.value,
+    devnote_body: devnoteText.value,
   };
-  saveNote(newDevnote).then(() => {
-    getAndRenderDevnotes();
-    renderActiveDevnote();
-  });
-};
+  
+  saveDevnote(newDevnote);//.then(() => {
+    //getAndRenderDevnotes();
+    //renderActiveDevnote();
+  //});
+};*/
 
 // Delete the clicked note
 const handleDevnoteDelete = (e) => {
@@ -192,13 +194,13 @@ const renderDevnoteList = async (devnotes) => {
 };
 
 // Gets devnotes from the db and renders them to the sidebar
-const getAndRenderDevnotes = () => getDevnotes().then(renderDevnoteList);
+//const getAndRenderDevnotes = () => getDevnotes().then(renderDevnoteList);
 
 if (window.location.pathname === '/dashboard') {
-  saveDevnoteBtn.addEventListener('click', handleDevnoteSave);
-  newDevnoteBtn.addEventListener('click', handleNewDevnoteView);
-  devnoteTitle.addEventListener('keyup', handleDevnoteRenderSaveBtn);
-  devnoteText.addEventListener('keyup', handleDevnoteRenderSaveBtn);
+  saveDevnoteBtn.addEventListener('click', saveDevnote);
+  //newDevnoteBtn.addEventListener('click', handleNewDevnoteView);
+  //devnoteTitle.addEventListener('keyup', handleDevnoteRenderSaveBtn);
+  //devnoteText.addEventListener('keyup', handleDevnoteRenderSaveBtn);
 }
 
-getAndRenderDevnotes();
+//getAndRenderDevnotes();

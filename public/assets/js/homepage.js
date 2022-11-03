@@ -50,7 +50,8 @@ const logout = async () => {
   }
 };
 
-document.querySelector('#logout_btn').addEventListener('click', logout);
+document.querySelector('#logout_btn')
+  .addEventListener('click', logout);
 
 document
   .querySelector('.new-project-form')

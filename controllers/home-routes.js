@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const { Devnote, User } = require('../models');
+const { Devnote, User, Comment } = require('../models');
 const bodyParser = require('body-parser');
 const { readFromFile, readAndAppend } = require('../utils/fsUtils');
 const uuid = require('../utils/uuid');
 const withAuth = require('../utils/auth');
 
 //HOME PAGE
-router.get('/homepage', async (req, res) => {
+router.get('/homepage', withAuth, async (req, res) => {
   // Get all devnotes and JOIN with user data
   //console.log(req.session.uid);
   const devnoteData = await Devnote.findAll({
@@ -38,11 +38,16 @@ router.get('/dashboard', withAuth, async (req, res) => {
     },
     include: [
       {
+        model: Comment,
+        //as: "comment"
+      },
+      {
         model: User,
         attributes: ['name', 'email'],
       },
     ],
   })
+  
   //const uid = req.session.user_id;
   // Serialize data so the template can read it
   const devnotes = devnoteData.map((devnote) => devnote.get({ plain: true }));
@@ -112,16 +117,33 @@ router.get('/devnotes/:id', async (req, res) => {
     where: {
       id: req.params.id,
     },
+    include: [
+      {
+        model: Comment,
+        //as: "comment",
+        include: [
+          {
+            model: User,
+            //as: "user"
+          }
+        ]
+      },
+      {
+        model: User,
+        //as: "user"
+      }
+    ]
   });
   // Serialize data so the template can read it
   //devnote = devnoteArr[0].map((devnote) => devnote.get({ plain: true }));
-  
-  const devnote_plain = devnote.get({plain:true});
-  // Pass serialized data and session flag into template
-  res.render('post', { 
-    devnote_plain, 
-    logged_in: req.session.logged_in
-  });
+  if(devnote){
+    const devnote_plain = devnote.get({plain:true});
+    // Pass serialized data and session flag into template
+    res.render('post', { 
+      devnote_plain, 
+      logged_in: req.session.logged_in
+    });
+  }
 });
 
 // Logout

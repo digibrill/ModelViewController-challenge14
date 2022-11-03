@@ -10,7 +10,7 @@ router.post('/devnotes', (req, res) => {
     
   console.info(`${req.method} request received to submit feedback`);
 
-  const { name, devnote_body} = req.body;
+  const { name, devnote_body } = req.body;
 
   // If all the required properties are present
   if (name && devnote_body) {
@@ -35,6 +35,39 @@ router.post('/devnotes', (req, res) => {
   }
 });
 
+//UPDATE NOTE
+router.put('/devnotes/:id', async (req, res) => {
+  try {
+    const { post_id } = req.params;
+    const [updated] = await Devnote.update(req.body, {
+      where: { id: post_id }
+    });
+    if (updated) {
+      const updatedNote = await Devnote.findOne({ where: { id: post_id } });
+      return res.status(200).json({ devnote: updatedNote });
+    }
+    throw new Error("Your note was not found!");
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+});
+
+//DELETE NOTE
+router.delete('/devnotes/:id', async (req, res) => {
+  try {
+    const deleted = await Devnote.destroy({
+      where: { id: req.params.id },
+    });
+    if (deleted) {
+      return res.status(204).send("Your note has been deleted");
+      res.redirect('/dashboard');
+    }
+    throw new Error("Your note was not found");
+  } catch (error) {
+    console.log('not deleted');
+    return res.status(500).send(error.message);
+  }
+});
 
 // CREATE new user
 router.post('/', async (req, res) => {

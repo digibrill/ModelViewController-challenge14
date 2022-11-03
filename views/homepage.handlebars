@@ -18,8 +18,10 @@
     <p>
       {{devnote.devnote_body}}
     </p>
+    {{#if logged_in}}<p><a href="/devnotes/{{devnote.id}}">EDIT NOTE</a></p>{{/if}}
   </div>
 </div>
 {{/each}}
-{{#if logged_in}}<p><a href="/devnotes/{{devnote.id}}">EDIT NOTE</a></p>{{/if}}
-{{#if logged_in}}<script src="./assets/js/logout.js"></script>{{else}}<script src="./assets/js/login.js"></script>{{/if}}
+
+{{#if logged_in}}<script src="./assets/js/logout.js"></script>{{else}}
+<script src="./assets/js/login.js"></script>{{/if}}

@@ -3,12 +3,19 @@
         <button type="submit" id="dashboard" class="btn btn-success">Dashboard</button> {{#if logged_in}}|
         <button type="submit" id="logout" class="btn btn-warning">Log out</button>{{else}}<button type="submit" id="login" class="btn btn-warning">Log in</button>{{/if}}
       </nav><br>
-{{#each devnotes as |devnote| }}  
-  {{#if @first}}
-    <h5>Welcome {{devnote.user.name}} (<a href="/changePassword">Change Password</a>)</h5>
-  {{/if}}<br><br>
+      
+<h5>Create a new Dev Note</h5>
+<form>
+  <input type="text" id="name" placeholder="Enter post title" class="form-control"/><br>
+  <textarea id="devnote_body" placeholder="Enter note body" class="form-control"></textarea><br>
+  <button type="submit" class="fas fa-save btn btn-success save-note"> Post Dev Note</button>
+</form><br><br>
+
+
+<h5>Your Dev Notes</h5>
+{{#each devnotes as |devnote| }}
+<h5>Welcome {{user.name}} <!--(<a href="/changePassword">Change Password</a>)--></h5>
   <div class="row mb-4 project">
-    <h6><strong>Your Dev Notes</strong></h6><br><br>
     <div class="col-md-5">
       <h6>
         {{devnote.name}}
@@ -16,22 +23,9 @@
       <p>
         {{devnote.devnote_body}}
       </p>
-      <p>User: {{devnote.user.email}}</p>
       <p><a href="/devnotes/{{devnote.id}}">EDIT NOTE</a></p>
     </div>
-
   </div>
 {{/each}}
-<h5>Create a new Dev Note</h5>
-    <nav class="navbar navbar-dark bg-dark">
-      <div class="icons">
-        <i class="fas fa-save text-light save-note"></i>
-        <i class="fas fa-plus text-light new-note"></i>
-      </div>
-    </nav>
-<form>
-  <input type="text" id="post_title" placeholder="Enter post title" class="form-control"/><br>
-  <textarea id="post_body" placeholder="Enter note body" class="form-control"></textarea><br>
-  <button type="submit" class="btn" id="post_note">Post Dev Note</button>
-</form>
 <script src="./assets/js/logout.js"></script>
+<script src="./assets/js/index.js"></script>
