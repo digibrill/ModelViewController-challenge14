@@ -137,5 +137,11 @@ router.post('/logout', (req, res) => {
   }
 });
 
+// Login route
+router.get('/register', (req, res) => {
+  res.render('register');
+  //logged_in: req.session.logged_in;
+});
+
 module.exports = router;
 

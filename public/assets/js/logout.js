@@ -1,4 +1,5 @@
 const logout = async () => {
+  document.logout_form.submit(); return false;
   const response = await fetch('/logout', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

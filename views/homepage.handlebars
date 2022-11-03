@@ -3,6 +3,7 @@
         <button type="submit" id="home" class="btn btn-success">Home</button> |
         <button type="submit" id="dashboard" class="btn btn-secondary">Dashboard</button> {{#if logged_in}}|
         <button type="submit" id="logout" class="btn btn-warning">Log out</button>{{else}}<button type="submit" id="login" class="btn btn-warning">Log in</button>{{/if}}
+        &nbsp;&nbsp;&nbsp;<a href="/register">Sign Up</a>
       </nav><br>
 
 {{#each devnotes as |devnote| }}
