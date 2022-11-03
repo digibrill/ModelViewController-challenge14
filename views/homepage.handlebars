@@ -1,27 +1,42 @@
       <nav>
-        
         <button type="submit" id="home" class="btn btn-success">Home</button> |
         <button type="submit" id="dashboard" class="btn btn-secondary">Dashboard</button> {{#if logged_in}}|
         <button type="submit" id="logout" class="btn btn-warning">Log out</button>{{else}}<button type="submit" id="login" class="btn btn-warning">Log in</button>{{/if}}
-        &nbsp;&nbsp;&nbsp;<a href="/register">Sign Up</a>
       </nav><br>
-
+{{#if logged_in}}
 {{#each devnotes as |devnote| }}
 <div class="row mb-4 project">
-  <div class="col-md-5">
-    <h5>
+  <div class="col-md-4">
+    <h5 class="font-weight-bold">
       <a href="/devnotes/{{devnote.id}}">{{devnote.name}}</a> {{sess_id}}
     </h5>
-    <p>Created by {{devnote.user.name}} on {{devnote.date_created}}</p>
+    <p>Created by {{devnote.user.name}} on {{format_date devnote.date_created}}</p>
   </div>
-  <div class="col-md-7">
+  <div class="col-md-8">
     <p>
       {{devnote.devnote_body}}
     </p>
-    {{#if logged_in}}<p><a href="/devnotes/{{devnote.id}}">EDIT NOTE</a></p>{{/if}}
+    <p><a href="/devnotes/{{devnote.id}}">EDIT NOTE</a></p>
   </div>
 </div>
 {{/each}}
+{{else}}
+{{#each devnotes as |devnote| }}
+<div class="row mb-4 project">
+  <div class="col-md-4">
+    <h5 class="font-weight-bold">
+      <strong>{{devnote.name}}</strong>
+    </h5>
+    <p>Created by {{devnote.user.name}} on {{format_date devnote.date_created}}</p>
+  </div>
+  <div class="col-md-8">
+    <p>
+      {{devnote.devnote_body}}
+    </p>
+  </div>
+</div>
+{{/each}}
+{{/if}}
 
 {{#if logged_in}}<script src="./assets/js/logout.js"></script>{{else}}
 <script src="./assets/js/login.js"></script>{{/if}}

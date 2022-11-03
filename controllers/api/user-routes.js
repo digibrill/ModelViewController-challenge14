@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const { User, Devnote } = require('../../models');
-//const bodyParser = require('body-parser');
 const { readFromFile, readAndAppend } = require('../../utils/fsUtils');
 const uuid = require('../../utils/uuid');
 const withAuth = require('../../utils/auth');
@@ -20,7 +19,6 @@ router.post('/devnotes', (req, res) => {
       name,
       devnote_body,
       user_id: req.session.uid,
-      //user_id: req.body.user_id
     });
 
     const response = {
@@ -37,11 +35,10 @@ router.post('/devnotes', (req, res) => {
 
 //UPDATE NOTE
 router.put('/devnotes/:id', async (req, res) => {
-    const { post_id } = req.params.id;
     const [updated] = await Devnote.update({
       name: req.body.devnotetitle,
       devnote_body: req.body.devnotebody},
-      { where: { id: post_id }},
+      { where: { id: req.body.id }},
     );
     return res.status(200).json({});
 });
@@ -94,7 +91,7 @@ router.post('/changePassword', async (req, res) => {
       password: req.body.password
     },{
       where: {
-        id: req.body.user_id//req.session.uid,
+        id: req.body.user_id
       },
     });
   }catch(err){

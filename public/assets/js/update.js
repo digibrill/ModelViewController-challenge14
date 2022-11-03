@@ -1,17 +1,15 @@
 const updateNote = async () => {
   const id = location.href.substring(31);
-  const devnotetitle = document.getElementById('name').value.trim()
-  const devnotebody = document.getElementById('devnote_body').value.trim()
+  const devnotetitle = document.getElementById('name').value.trim();
+  const devnotebody = document.getElementById('devnote_body').value.trim();
   const response = await fetch('/api/users/devnotes/' + id, {
     method: 'PUT',
-    body: JSON.stringify({ devnotetitle, devnotebody }),
+    body: JSON.stringify({ id, devnotetitle, devnotebody }),
     headers: { 'Content-Type': 'application/json' },
-  });
-  if (response.ok) {
+  }).then((response) => {
     document.location.replace('/dashboard');
-  } else {
-    alert(response.statusText);
-  }
+    console.log(response);
+  });
 };
 
 const deleteNote = async () => {

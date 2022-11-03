@@ -30,8 +30,6 @@ router.get('/homepage', withAuth, async (req, res) => {
 
 //DASHBOARD PAGE
 router.get('/dashboard', withAuth, async (req, res) => {
-  // Get all devnotes and JOIN with user data
-  //console.log(req.session.uid);
   const devnoteData = await Devnote.findAll({
     where: {
       user_id: req.session.uid,
@@ -48,12 +46,8 @@ router.get('/dashboard', withAuth, async (req, res) => {
     ],
   })
   
-  //const uid = req.session.user_id;
-  // Serialize data so the template can read it
   const devnotes = devnoteData.map((devnote) => devnote.get({ plain: true }));
 
-  //console.log(devnotes);
-  // Pass serialized data and session flag into template
   res.render('dashboard', {
     devnotes,
     logged_in: req.session.logged_in
@@ -95,13 +89,10 @@ router.post('/login', async (req, res) => {
       return;
     }
 
-    // Once the user successfully logs in, set up the sessions variable 'logged_in'
     req.session.save(() => {
       req.session.logged_in = true;
-      //req.session.uid = 
       res.status(200)
         .json({ dbUserData, message: 'You are now logged in!' });
-      //res.redirect('/dashboard');
     });
   } catch (err) {
     console.log(err);
@@ -112,7 +103,6 @@ router.post('/login', async (req, res) => {
 
 //Devnote post page
 router.get('/devnotes/:id', async (req, res) => {
-  //console.log('test');
   const devnote = await Devnote.findOne({
     where: {
       id: req.params.id,
@@ -120,25 +110,19 @@ router.get('/devnotes/:id', async (req, res) => {
     include: [
       {
         model: Comment,
-        //as: "comment",
         include: [
           {
             model: User,
-            //as: "user"
           }
         ]
       },
       {
         model: User,
-        //as: "user"
       }
     ]
   });
-  // Serialize data so the template can read it
-  //devnote = devnoteArr[0].map((devnote) => devnote.get({ plain: true }));
   if(devnote){
     const devnote_plain = devnote.get({plain:true});
-    // Pass serialized data and session flag into template
     res.render('post', { 
       devnote_plain, 
       logged_in: req.session.logged_in
@@ -146,9 +130,7 @@ router.get('/devnotes/:id', async (req, res) => {
   }
 });
 
-// Logout
 router.post('/logout', (req, res) => {
-  // When the user logs out, destroy the session
   if (req.session.logged_in) {
     req.session.destroy(() => {
       res.redirect('/login')
@@ -159,10 +141,8 @@ router.post('/logout', (req, res) => {
   }
 });
 
-// Login route
 router.get('/register', (req, res) => {
   res.render('register');
-  //logged_in: req.session.logged_in;
 });
 
 module.exports = router;
