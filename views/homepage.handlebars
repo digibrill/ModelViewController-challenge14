@@ -3,29 +3,11 @@
         <button type="submit" id="dashboard" class="btn btn-secondary">Dashboard</button> {{#if logged_in}}|
         <button type="submit" id="logout" class="btn btn-warning">Log out</button>{{else}}<button type="submit" id="login" class="btn btn-warning">Log in</button>{{/if}}
       </nav><br>
-{{#if logged_in}}
 {{#each devnotes as |devnote| }}
 <div class="row mb-4 project">
   <div class="col-md-4">
     <h5 class="font-weight-bold">
-      <a href="/devnotes/{{devnote.id}}">{{devnote.name}}</a> {{sess_id}}
-    </h5>
-    <p>Created by {{devnote.user.name}} on {{format_date devnote.date_created}}</p>
-  </div>
-  <div class="col-md-8">
-    <p>
-      {{devnote.devnote_body}}
-    </p>
-    <p><a href="/devnotes/{{devnote.id}}">EDIT NOTE</a></p>
-  </div>
-</div>
-{{/each}}
-{{else}}
-{{#each devnotes as |devnote| }}
-<div class="row mb-4 project">
-  <div class="col-md-4">
-    <h5 class="font-weight-bold">
-      <strong>{{devnote.name}}</strong>
+      {{devnote.name}}
     </h5>
     <p>Created by {{devnote.user.name}} on {{format_date devnote.date_created}}</p>
   </div>
@@ -36,7 +18,6 @@
   </div>
 </div>
 {{/each}}
-{{/if}}
 
 {{#if logged_in}}<script src="./assets/js/logout.js"></script>{{else}}
 <script src="./assets/js/login.js"></script>{{/if}}

@@ -20,9 +20,16 @@ router.get('/homepage', withAuth, async (req, res) => {
   //const uid = req.session.user_id;
   // Serialize data so the template can read it
   const devnotes = devnoteData.map((devnote) => devnote.get({ plain: true }));
-  //console.log(devnotes);
+  const loggedInUser = await User.findOne({
+    where: {
+      id: req.session.uid
+    },
+    attributes: ['name'],
+  });
+  
   // Pass serialized data and session flag into template
   res.render('homepage', {
+    loggedInUser: loggedInUser.name,
     devnotes,
     logged_in: req.session.logged_in
   });
