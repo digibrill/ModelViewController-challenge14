@@ -47,8 +47,15 @@ router.get('/dashboard', withAuth, async (req, res) => {
   })
   
   const devnotes = devnoteData.map((devnote) => devnote.get({ plain: true }));
-
+  const loggedInUser = await User.findOne({
+    where: {
+      id: req.session.uid
+    },
+    attributes: ['name'],
+  });
+  console.log(loggedInUser);
   res.render('dashboard', {
+    loggedInUser: loggedInUser.name,
     devnotes,
     logged_in: req.session.logged_in
   });

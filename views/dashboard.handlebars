@@ -3,7 +3,7 @@
         <button type="submit" id="dashboard" class="btn btn-success">Dashboard</button> {{#if logged_in}}|
         <button type="submit" id="logout" class="btn btn-warning">Log out</button>{{else}}<button type="submit" id="login" class="btn btn-warning">Log in</button>{{/if}}
       </nav><br>
-      <h4 style="font-weight:bold;">Welcome {{user.name}} <!--(<a href="/changePassword">Change Password</a>)--></h4>
+      <h4 style="font-weight:bold;">Welcome {{loggedInUser}}<!--(<a href="/changePassword">Change Password</a>)--></h4>
 
 <h5 style="font-weight:bold;">Create a new Dev Note</h5>
 <form>
@@ -11,7 +11,6 @@
   <textarea id="devnote_body" placeholder="Enter note body" class="form-control"></textarea><br>
   <button type="submit" class="fas fa-save btn btn-success save-note"> Post Dev Note</button>
 </form><br><br>
-
 <h5 style="font-weight:bold;">Your Dev Notes</h5>
 {{#each devnotes as |devnote| }}
 
